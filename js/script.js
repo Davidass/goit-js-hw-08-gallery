@@ -9,37 +9,48 @@ const refs = {
   closeModalBnt: document.querySelector('button[data-action="close-lightbox"]'),
 };
 
-// Создание и рендер разметки по массиву данных и предоставленному шаблону. делаю по методу с 3 задания понимаю что нужно использовать другой метот но пока не разобрался
+// Создание и рендер разметки по массиву данных и предоставленному шаблон по примеру с вебинара
 
-const createGalleryRef = images => {
-  const arrItems = images.map(image => {
-    const listItemRef = document.createElement('li');
-    listItemRef.classList.add('gallery__item');
+// const createGalleryRef = ({ original, preview, description }) => {
+//   const listItemRef = document.createElement('li');
+//   listItemRef.classList.add('gallery__item');
 
-    const linkGalleryRef = document.createElement('a');
-    linkGalleryRef.classList.add('gallery__link');
-    linkGalleryRef.setAttribute('href', image.original);
-    listItemRef.append(linkGalleryRef);
+//   const linkGalleryRef = document.createElement('a');
+//   linkGalleryRef.classList.add('gallery__link');
+//   linkGalleryRef.setAttribute('href', original);
+//   listItemRef.append(linkGalleryRef);
 
-    const imageGalleryRef = document.createElement('img');
-    imageGalleryRef.classList.add('gallery__image');
-    imageGalleryRef.setAttribute('src', image.preview);
-    imageGalleryRef.setAttribute('data-source', image.original);
-    imageGalleryRef.setAttribute('alt', image.description);
-    linkGalleryRef.append(imageGalleryRef);
-    return listItemRef;
-  });
+//   const imageGalleryRef = document.createElement('img');
+//   imageGalleryRef.classList.add('gallery__image');
+//   imageGalleryRef.setAttribute('src', preview);
+//   imageGalleryRef.setAttribute('data-source', original);
+//   imageGalleryRef.setAttribute('alt', description);
+//   linkGalleryRef.append(imageGalleryRef);
 
-  refs.ulGallery.append(...arrItems);
-};
+//   return listItemRef;
+// };
 
-createGalleryRef(gallery);
+// const createGalleryEl = gallery.map(createGalleryRef);
 
-// Реализация делегирования на галерее ul.js-gallery и получение url большого изображения.
+// refs.ulGallery.append(...createGalleryEl);
+
+// Создание и рендер разметки по парсу
+
+const cardsGallery = createGalleryRef(gallery);
+
+refs.ulGallery.insertAdjacentHTML('beforeend', cardsGallery);
 
 refs.ulGallery.addEventListener('click', openGallery);
-refs.closeModalBnt.addEventListener('click', onCloseModal);
-refs.backdropRef.addEventListener('click', onBackDropClick);
+
+function createGalleryRef(images) {
+  return images
+    .map(({ preview, original, description }) => {
+      return `<li class="gallery__item"> <a class = "gallery___link" href="${original}"> <img class = "gallery__image" src="${preview}" data-source="${original}" alt="${description}"/> </a> </li>
+    `;
+    })
+    .join('');
+}
+// Реализация делегирования на галерее ul.js-gallery и получение url большого изображения.
 
 function openGallery(event) {
   event.preventDefault();
@@ -58,25 +69,21 @@ function openGallery(event) {
   // console.log(largeImageURL);
   refs.modal.classList.add('is-open');
   window.addEventListener('keydown', onPressEscape);
+  window.addEventListener('keydown', onNextImgGallery);
 
   setLargeImageSrc(largeImageURL);
 }
+
 //Подмена значения атрибута src элемента img.lightbox__image.
 
 function setLargeImageSrc(url) {
   refs.largeImage.src = url;
 }
 
-// Closing modal window
-
-function onCloseModal() {
-  refs.modal.classList.remove('is-open');
-  refs.largeImage.src = '';
-  refs.largeImage.alt = '';
-  window.removeEventListener('keydown', onPressEscape);
-}
-
 // закрытие по клику на Backdrop
+
+refs.backdropRef.addEventListener('click', onBackDropClick);
+
 function onBackDropClick(event) {
   if (event.target === event.currentTarget) {
     onCloseModal();
@@ -88,4 +95,42 @@ function onPressEscape(event) {
   if (event.code === 'Escape') {
     onCloseModal();
   }
+}
+
+// закрытие модального окна
+refs.closeModalBnt.addEventListener('click', onCloseModal);
+
+function onCloseModal() {
+  refs.modal.classList.remove('is-open');
+  refs.largeImage.src = '';
+  refs.largeImage.alt = '';
+  window.removeEventListener('keydown', onPressEscape);
+  window.removeEventListener('keydown', onNextImgGallery);
+}
+
+// Пролистование галереи фотографий
+
+function onNextImgGallery(event) {
+  const rightKey = 'ArrowRight';
+  const leftKey = 'ArrowLeft';
+
+  let findIndexImg = gallery.findIndex(
+    img => img.original === refs.largeImage.src,
+  );
+
+  if (event.code === leftKey) {
+    if (findIndexImg === 0) {
+      return;
+    }
+    findIndexImg -= 1;
+  }
+
+  if (event.code === rightKey) {
+    if (findIndexImg === gallery.length - 1) {
+      return;
+    }
+    findIndexImg += 1;
+  }
+  refs.largeImage.src = gallery[findIndexImg].original;
+  refs.largeImage.alt = gallery[findIndexImg].description;
 }
