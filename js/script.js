@@ -38,7 +38,7 @@ const refs = {
 function createGalleryRef(images) {
   return images
     .map(({ preview, original, description }) => {
-      return `<li class="gallery__item"> <a class = "gallery___link" href="${original}"> <img loading= "lazy" class = "lightbox__image lazyload" data-src="${preview}" data-source="${original}" alt="${description}"/></a> </li>
+      return `<li class="gallery__item"> <a class = "gallery___link" href="${original}"> <img loading= "lazy" class = "gallery__image lazyload" data-src="${preview}" data-source="${original}" alt="${description}"/></a> </li>
     `;
     })
     .join('');
