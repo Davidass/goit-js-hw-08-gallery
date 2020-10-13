@@ -20,7 +20,7 @@
       <div class="lightbox__overlay"></div>
 
       <div class="lightbox__content">
-        <img class="lightbox__image" src="" alt="" />
+        <img class="lightbox__image lazyload" data-src="" alt="" />
       </div>
 
       <button
@@ -29,6 +29,11 @@
         data-action="close-lightbox"
       ></button>
     </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.2.2/lazysizes.min.js"
+      integrity="sha512-TmDwFLhg3UA4ZG0Eb4MIyT1O1Mb+Oww5kFG0uHqXsdbyZz9DcvYQhKpGgNkamAI6h2lGGZq2X8ftOJvF/XjTUg=="
+      crossorigin="anonymous"
+    ></script>
 
     <script src="./js/gallery-items.js" type="module"></script>
     <script src="./js/script.js" type="module"></script>

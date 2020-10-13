@@ -35,6 +35,14 @@ const refs = {
 // refs.ulGallery.append(...createGalleryEl);
 
 // Создание и рендер разметки по парсу
+function createGalleryRef(images) {
+  return images
+    .map(({ preview, original, description }) => {
+      return `<li class="gallery__item"> <a class = "gallery___link" href="${original}"> <img loading= "lazy" class = "lightbox__image lazyload" data-src="${preview}" data-source="${original}" alt="${description}"/></a> </li>
+    `;
+    })
+    .join('');
+}
 
 const cardsGallery = createGalleryRef(gallery);
 
@@ -42,14 +50,6 @@ refs.ulGallery.insertAdjacentHTML('beforeend', cardsGallery);
 
 refs.ulGallery.addEventListener('click', openGallery);
 
-function createGalleryRef(images) {
-  return images
-    .map(({ preview, original, description }) => {
-      return `<li class="gallery__item"> <a class = "gallery___link" href="${original}"> <img class = "gallery__image" src="${preview}" data-source="${original}" alt="${description}"/> </a> </li>
-    `;
-    })
-    .join('');
-}
 // Реализация делегирования на галерее ul.js-gallery и получение url большого изображения.
 
 function openGallery(event) {
